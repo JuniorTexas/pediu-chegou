@@ -1,0 +1,34 @@
+# render.yaml — Blueprint do Render (deploy com 1 clique: web + PostgreSQL)
+# Uso: crie um repositório no GitHub com este projeto, depois no Render
+# clique em "New > Blueprint" e conecte o repositório. O Render cria tudo.
+# Defina ADMIN_EMAIL e ADMIN_PASSWORD no painel do Render após o primeiro deploy.
+
+services:
+  - type: web
+    name: pediu-chegou
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PGSSL
+        value: "1"
+      - key: JWT_SECRET
+        generateValue: true   # o Render gera uma chave secreta aleatória
+      - key: ADMIN_EMAIL
+        sync: false           # defina no painel (seu e-mail)
+      - key: ADMIN_PASSWORD
+        sync: false           # defina no painel (senha forte)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pediuchegou-db
+          property: connectionString
+
+databases:
+  - name: pediuchegou-db
+    plan: starter
+    databaseName: pediuchegou
+    user: pediu

@@ -1,0 +1,60 @@
+=== COMO COLOCAR O PEDIU CHEGOU NO AR (24h por dia) ===
+
+O site temporario (túnel) fecha quando voce fecha esta sessao. Para ficar
+sempre no ar, voce precisa de uma hospedagem. A mais facil e o Render
+(~USD 7/mes no plano Starter, suficiente para comecar).
+
+PASSO 1 — Criar uma conta no GitHub (de graca)
+  1. Acesse https://github.com e crie uma conta.
+  2. Clique em "New repository" → nome: pediu-chegou → Publico → Create.
+  3. Na pagina do repositorio, clique em "uploading an existing file" e
+     arraste TODOS os arquivos desta pasta (menos a pasta node_modules) para
+     la. Clique em "Commit changes".
+  (O codigo agora esta no GitHub, pronto para o Render ler.)
+
+PASSO 2 — Deploy no Render (com 1 clique, via render.yaml)
+  1. Acesse https://render.com e crie uma conta (use "Sign up with GitHub").
+  2. Clique em "New +" → "Blueprint".
+  3. Conecte o repositorio "pediu-chegou" que voce criou.
+  4. O Render vai ler o arquivo render.yaml automaticamente e mostrar:
+     - Web Service: pediu-chegou
+     - Banco de dados: pediuchegou-db (PostgreSQL)
+  5. Defina estes dois valores (o render.yaml pede para voce preencher):
+       ADMIN_EMAIL     = seu e-mail (ex: voce@seuemail.com)
+       ADMIN_PASSWORD  = uma senha forte (ex: MinhaSenhaForte2026!)
+  6. Clique em "Apply" / "Deploy".
+  7. Espere ~2-3 minutos. Quando aparecer "Live", o site estara no ar em:
+       https://pediu-chegou.onrender.com   (ou nome similar)
+
+PASSO 3 — Primeiro acesso
+  - Abra a URL. Entre com o ADMIN_EMAIL e ADMIN_PASSWORD que voce definiu.
+  - O painel do administrador abre. Lá voce aprova entregadores e lojas,
+    ve pedidos, financas, etc.
+  - Nao use SEED_DEMO em producao (contas de teste nao sao criadas). Cada
+    pessoa se cadastra pelo proprio app.
+
+OPCAO B — Railway (alternativa)
+  1. https://railway.app → "Start a New Project" → "Deploy from GitHub repo".
+  2. Conecte o repositorio. O Railway detecta Node automaticamente.
+  3. Adicione um plugin: "New +" → "Database" → "PostgreSQL".
+  4. No servico web, aba "Variables", adicione:
+       DATABASE_URL = (o Railway preenche automatico se voce conectar o plugin)
+       PGSSL=1
+       NODE_ENV=production
+       JWT_SECRET = (gere uma chave longa aleatoria)
+       ADMIN_EMAIL / ADMIN_PASSWORD = seus dados
+  5. Em "Settings" → "Networking" → "Generate Domain" para ter uma URL publica.
+
+BANCO DE DADOS GRATUITO (opcional, em vez do pago do Render)
+  - Crie conta em https://neon.tech (PostgreSQL gratuito).
+  - Crie um banco e copie a DATABASE_URL (comeca com postgres://...).
+  - No Render, em vez de usar o banco do Blueprint, use essa URL e PGSSL=1.
+
+IMPORTANTE
+  - A URL do Render/Railway ja e HTTPS → a camera (reconhecimento facial do
+    entregador) funciona no celular.
+  - O plano gratuito do Render "dorme" apos 15 min sem uso (demora ~50s para
+    acordar). Para 24h sem parar, use o plano pago (Starter, ~USD 7/mes).
+  - Para usar seu proprio dominio (ex: app.pediuchegou.com), configure no
+    painel do Render em "Custom Domains" (precisa de um dominio comprado).
+  - Sempre troque JWT_SECRET por uma chave longa e secreta em producao.

@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: pediu
+      POSTGRES_PASSWORD: pediu123
+      POSTGRES_DB: pediuchegou
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pediu -d pediuchegou"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://pediu:pediu123@db:5432/pediuchegou
+      PGSSL: "0"
+      PORT: "3000"
+      ADMIN_EMAIL: admin@pediuchegou.com
+      ADMIN_PASSWORD: troque-esta-senha-123
+      JWT_SECRET: troque-esta-chave-secreta-em-producao
+      # SEED_DEMO: "1"   # descomente para criar contas de teste (banco vazio)
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
