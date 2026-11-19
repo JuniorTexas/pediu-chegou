@@ -1,0 +1,19 @@
+# Dependencias de Node (nunca subir)
+node_modules/
+
+# Variables de entorno con contraseñas (nunca subir)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
